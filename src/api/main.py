@@ -3,9 +3,9 @@ from spotipy import Spotify, SpotifyOAuth
 
 
 from loguru import logger
-from database import Database
+from .database import Database
 
-
+from rich.pretty import pprint
 
 class SpotiLikeAPI:
     def __init__(self):
@@ -33,6 +33,16 @@ class SpotiLikeAPI:
     def error(self, e=None):
         print('error')
         
+    def _get_all_playlists(self):
+        results = self.sp.current_user_playlists()
+        
+        tracks = results['items']
+        while results['next']:
+            results = self.sp.next(results)
+            tracks.extend(results['items'])
+            
+        return tracks
+    
     def get_user_playlists(self):
         """
         {
@@ -40,15 +50,10 @@ class SpotiLikeAPI:
         }
         playlists = {str(item['name']): {"id": item['id']} for item in self.sp.current_user_playlists()["items"] if item["owner"]["id"] == self.sp.me()["id"]}
         """
-        playlists = {}
+        data = self._get_all_playlists()
         _id = self.sp.me()['id']
         
-        for item in self.sp.current_user_playlists()["items"]:
-            if item["owner"]["id"] == _id:
-                playlists[item['id']] = str(item['name'])
-                logger.debug(f"Playlist obtained: {item['name']} -> {item['id']}")
-        
-        return playlists
+        return {item['id']: item['name'] for item in data if item['owner']['id'] == _id}
     
     
 

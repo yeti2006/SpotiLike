@@ -44,17 +44,41 @@ class Database:
         
         if not hotkey_data: # first time
             self.cursor.executemany("INSERT INTO hotkeys (id, hotkey) VALUES (?,?)", [(x, None) for x in data])
+            self.cursor.execute("INSERT INTO hotkeys (id, hotkey) VALUES (?,?)", ("liked_songs", "<ctrl>+l"))
             self.db.commit()
             return
         
+        
         new_playlist = []
+        remove_playlist = []
+        
+        for id in [x[0] for x in hotkey_data]:
+            if id not in data:
+                if not id == "liked_songs":
+                    remove_playlist.append(id)
         
         for id in data:
             if id not in [x[0] for x in hotkey_data]:
-                new_playlist.append(id)
+                if not id == "liked_songs":
+                    new_playlist.append(id)
             
         if new_playlist:
             self.cursor.executemany("INSERT INTO hotkeys (id, hotkey) VALUES (?,?)", [(x, None) for x in new_playlist])
-            self.db.commit()
         
+        if remove_playlist:
+            self.cursor.executemany("DELETE FROM hotkeys WHERE id IN (?)", [tuple(remove_playlist)])
+            
+        self.db.commit()
 
+
+    def get_playlists(self):
+        self.cursor.execute("SELECT * FROM playlists")
+        all_playlists = self.cursor.fetchall()
+        
+        return all_playlists
+    
+    def get_hotkeys(self, id):
+        
+        self.cursor.execute("SELECT * FROM hotkeys WHERE id=?", (id, ))
+        
+        return self.cursor.fetchone()
