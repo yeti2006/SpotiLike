@@ -1,4 +1,3 @@
-
 """
 Credit to https://github.com/Cvaniak/TextualListViewUnofficial
 You can install this custom made widget via pip 
@@ -40,7 +39,7 @@ class MultipleWidgetsWindowView(View, layout=VerticalLayout):
         *,
         auto_width: bool = False,
         gutter: SpacingDimensions = (0, 0),
-        name: str | None = None
+        name: str | None = None,
     ) -> None:
         layout = VerticalLayout(gutter=gutter, auto_width=auto_width)
         super().__init__(name=name, layout=layout)
@@ -106,14 +105,14 @@ class MultipleWidgetsWindowView(View, layout=VerticalLayout):
 
     async def remove_widget_by_index(self, index: int = 0):
         if not self._widgets:
-            return 
-        index = min(len(self._widgets)-1, max(0, index))
+            return
+        index = min(len(self._widgets) - 1, max(0, index))
         self._widgets.pop(index)
         await self.arrange_widgets()
 
     async def remove_widget(self, widget: Widget):
         if not self._widgets:
-            return 
+            return
         self._widgets.remove(widget)
         await self.arrange_widgets()
 
@@ -133,21 +132,22 @@ class ListViewUo(ScrollView):
         self.vscroll.refresh()
         self.hscroll.refresh()
 
-    async def add_widget(self, widget:Widget, index:int|None = None):
+    async def add_widget(self, widget: Widget, index: int | None = None):
         await self.window.add_widget(widget, index)
         self.refresh_all()
 
-    async def remove_widget_by_index(self, index: int=0):
+    async def remove_widget_by_index(self, index: int = 0):
         await self.window.remove_widget_by_index(index)
         self.refresh_all()
 
     async def remove_widget(self, widget: Widget):
         await self.window.remove_widget(widget)
         self.refresh_all()
-        
+
+
 class PlaylistButton(Button):
     mouse_over = Reactive(False)
-    
+
     # def __init__(self, label=None, name=None, style=None, hotkey=None, *args, **kwargs):
     #     super().__init__()
     #     self.label = label
@@ -155,9 +155,12 @@ class PlaylistButton(Button):
     #     self.name = name
     #     self.style = style
 
-
     def render(self) -> Panel:
-        return Panel(f"[b]{self.label[1]}[/b]", style=("on red" if self.mouse_over else "cyan"), title=self.label[0])
+        return Panel(
+            f"[b]{self.label[1]}[/b]",
+            style=("on red" if self.mouse_over else "cyan"),
+            title=self.label[0],
+        )
 
     def on_enter(self) -> None:
         self.mouse_over = True

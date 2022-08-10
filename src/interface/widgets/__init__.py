@@ -1,2 +1,2 @@
-from .input import CMD, hotkeyInput
+from .input import CMD, ShortcutInput
 from .scrollable import ListViewUo, PlaylistButton

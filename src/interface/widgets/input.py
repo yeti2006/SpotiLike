@@ -1,6 +1,11 @@
 from textual_inputs import TextInput
-from rich.padding import Padding
+
 from textual.widget import Widget
+from textual.views import GridView
+from textual.widgets import Placeholder
+
+from rich.panel import Panel
+
 
 class CMD(TextInput):
     def __init__(self):
@@ -9,15 +14,10 @@ class CMD(TextInput):
         self.placeholder = "Enter command [see help for more]"
         self.style = "yellow"
         self.border_style = "cyan"
-        
-    
-class hotkeyInput(TextInput):
-    def __init__(self):
-        super().__init__()
-        self.value = "ctrl+?"
-        self.title = "Enter hotkey"
-        
-    def render(self):
-        return Padding(super().render(), (10, 5))
 
-        
+
+class ShortcutInput(Widget):
+    def render(self):
+        view = GridView()
+
+        return view
